@@ -121,3 +121,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
+
+STATIC_ROOT= '/home/debian/django_tutorial/static/'
