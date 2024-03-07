@@ -62,7 +62,7 @@ pipeline {
 		script {
                      sshagent(credentials: ['VPS_SSH']) {
                          sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es wget https://raw.githubusercontent.com/JairoDH/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
-                         sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es docker-compose up -d --force-recreate"
+                         sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es docker compose up -d --force-recreate"
                      }
                 }  
             }
