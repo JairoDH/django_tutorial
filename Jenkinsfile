@@ -43,7 +43,7 @@ pipeline {
                 stage('Up-images') {
 		   steps {
 		       script {
-			   docker.withResgitry( '', LOGIN) {
+			   docker.withRegistry( '', LOGIN) {
 				App.push()
 			   }
 		       }
