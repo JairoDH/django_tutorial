@@ -1,7 +1,7 @@
 FROM python:3
 WORKDIR /usr/src/app
 RUN pip install --root-user-action=ignore --upgrade pip && pip install --root-user-action=ignore django mysqlclient
-COPY djanto_tutorial /usr/src/app
+COPY . /usr/src/app
 COPY ./django.sh /usr/src/app/
 RUN chmod +x /usr/src/app/django.sh
 #ENV ALLOWED_HOSTS=*
