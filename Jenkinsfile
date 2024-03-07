@@ -1,7 +1,7 @@
 pipeline { 
     environment {
         IMAGE = "jairodh/django_jenkins"
-        LOGIN = "USER_DOCKERHUB"
+        LOGIN = "DOCKER_HUB"
     }
     agent none
     stages {
