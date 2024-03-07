@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  django-jenkins:
+    container_name: django-jenkins
+    image: jairodh/django_jenkins
+    restart: always
+    environment:
+       ALLOWED_HOSTS: "*"
+       DB_DJANGO: django
+       USER_DJANGO: django
+       PWD_DJANGO: django
+       HOST_DJANGO: mariadb
+       DJANGO_SUPERUSER_USERNAME: admin
+       DJANGO_SUPERUSER_PASSWORD: admin
+    ports:
+       - 8085:8010
+    depends_on:
+       - db_django-jenkins
+  db_django-jenkins:
+    container_name: mariadb-django-jenkins
+    image: mariadb
+    restart: always
+    environment:
+       MARIADB_ROOT_PASSWORD: root
+       MARIADB_DATABASE: django
+       MARIADB_USER: django
+       MARIADB_PASSWORD: django
+    volumes:
+       - vol-mariadb-django-jenkins:/var/lib/mysql
+volumes:
+    vol-mariadb-django-jenkins:

@@ -1,5 +1,9 @@
 pipeline {
-    agent none
+    enviroment {
+	IMAGE = "jairodh/django_jenkins"
+	LOGIN = "USER_DOCKERHUB"
+    }
+    agent any
     stages {
         stage ('Build And Test Django') { 
             agent { 
@@ -27,23 +31,36 @@ pipeline {
         }
         stage('Build Image') {
             agent any
-            stages {
-                stage('Build and push') {
+            stages {	
+                stage('Build') {
                     steps {
                         script {
-                            withDockerRegistry([credentialsId: 'DOCKER_HUB', url: '']) {
-                            def dockerImage = docker.build("jairodh/django_jenkins:${env.BUILD_ID}")
-                            dockerImage.push()
-                            }
+                            App = docker.build "$IMAGE:latest"
                         }
                     }
                 }
-                stage('Remove image') {
-                    steps {
-                        script {
-                            sh "docker rmi jairodh/django_jenkins:${env.BUILD_ID}"
+		stage('UP') {
+		    steps {
+			script {
+			   docker.withRegistry( '', LOGIN ) {
+				App.push()
+                           }
                         }
                     }
+                }             
+                stage('Remove image') {
+                    steps {
+                        sh "docker rmi $IMAGE:latest"
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            agent any
+            steps {
+		sshagent(credentials: ['VPS_SSH']
+                        sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es wget https://raw.githubusercontent.com/JairoDH/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
+                        sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es docker compose up -d --force-recreate"
                 }
             }
         }
