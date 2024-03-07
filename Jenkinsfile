@@ -17,7 +17,7 @@ pipeline {
             steps {
                 stage('Clone') {
                     steps {
-                        git branch:'master', url:'https://github.com/JairoDH/django_tutorial.git'
+                        git branch:'master',url:'https://github.com/JairoDH/django_tutorial.git'
                     }
                 }
                 stage('Install') {
@@ -32,26 +32,34 @@ pipeline {
                 }
             }
         }
-        stage('Build Image') {
-            steps {
-                script {
-                    App = docker.build "$IMAGE:latest"
+        stage('Build-Image') {
+            agent any
+            stages {
+                stage('build-image') {
+		   steps {
+                      script { 
+                           App = docker.build "$IMAGE:latest"
+                      }
+                   }
                 }
-            }
-            post {
-                success {
-                    script {
-                        docker.withRegistry('', LOGIN) {
-                            App.push()
-                        }
-                    }
+                stage('Up-images') {
+		   steps {
+		       script {
+			   docker.withResgitry( '', LOGIN ) {
+				App.push()
+			   }
+		       }
+	           }
+	        }  
+                stage('Remove-image') {
+		   steps {
+                        sh "docker rmi $IMAGE:latest"
+                   }
                 }
-                always {
-                    sh "docker rmi $IMAGE:latest"
-                }
-            }
-        }
-        stage('Deploy') {
+             }
+	}
+        stage('Deployment') {
+	    agent any
             steps {
                 sshagent(credentials: ['VPS_SSH']) {
                     sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es wget https://raw.githubusercontent.com/JairoDH/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
