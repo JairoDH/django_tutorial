@@ -9,11 +9,12 @@ services:
        DB_DJANGO: django
        USER_DJANGO: django
        PWD_DJANGO: django
-       HOST_DJANGO: mariadb
+       HOST_DJANGO: mariadb-django-jenkins
        DJANGO_SUPERUSER_USERNAME: admin
        DJANGO_SUPERUSER_PASSWORD: admin
+       DJANGO_SUPERUSER_EMAIL: admin@example.org
     ports:
-       - 8085:8010
+       - 8085:8000
     depends_on:
        - db_django-jenkins
   db_django-jenkins:

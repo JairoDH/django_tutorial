@@ -1,11 +1,9 @@
-pipeline {
-    agent any
-    
+pipeline { 
     environment {
         IMAGE = "jairodh/django_jenkins"
         LOGIN = "USER_DOCKERHUB"
     }
-    
+    agent none
     stages {
         stage('Build And Test Django') {
             agent {
@@ -14,7 +12,7 @@ pipeline {
                     args '-u root:root'
                 }
             }
-            steps {
+            stages {
                 stage('Clone') {
                     steps {
                         git branch:'master',url:'https://github.com/JairoDH/django_tutorial.git'
@@ -38,14 +36,14 @@ pipeline {
                 stage('build-image') {
 		   steps {
                       script { 
-                           App = docker.build "$IMAGE:latest"
+                           App = docker.build "$IMAGE:$BUILD_NUMBER"
                       }
                    }
                 }
                 stage('Up-images') {
 		   steps {
 		       script {
-			   docker.withResgitry( '', LOGIN ) {
+			   docker.withResgitry( '', LOGIN) {
 				App.push()
 			   }
 		       }
@@ -53,7 +51,7 @@ pipeline {
 	        }  
                 stage('Remove-image') {
 		   steps {
-                        sh "docker rmi $IMAGE:latest"
+                        sh "docker rmi $IMAGE:$BUILD_NUMBER"
                    }
                 }
              }
@@ -61,14 +59,15 @@ pipeline {
         stage('Deployment') {
 	    agent any
             steps {
-                sshagent(credentials: ['VPS_SSH']) {
-                    sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es wget https://raw.githubusercontent.com/JairoDH/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
-                    sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es docker-compose up -d --force-recreate"
-                }
+		script {
+                     sshagent(credentials: ['VPS_SSH']) {
+                         sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es wget https://raw.githubusercontent.com/JairoDH/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
+                         sh "ssh -o StrictHostKeyChecking=no jairo@fekir.touristmap.es docker-compose up -d --force-recreate"
+                     }
+                }  
             }
-        }
+        } 
     }
-    
     post {
         always {
             mail to: 'jairo@jairo.docker-jenkins.org',
