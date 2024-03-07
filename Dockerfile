@@ -2,7 +2,7 @@ FROM python:3
 WORKDIR /usr/src/app
 RUN pip install --root-user-action=ignore --upgrade pip && pip install --root-user-action=ignore django mysqlclient
 COPY ./django.sh /usr/src/app/
-RUN chmod -x /usr/src/app/django.sh
+RUN chmod +x /var/src/app/django.sh
 ENV ALLOWED_HOSTS=*
 ENV HOST_DJANGO=mariadb
 ENV USER_DJANGO=django
