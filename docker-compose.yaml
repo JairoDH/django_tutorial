@@ -2,7 +2,7 @@ version: '3.7'
 services:
   django-jenkins:
     container_name: django-jenkins
-    image: jairodh/django_jenkins
+    image: jairodh/django:v4
     restart: always
     environment:
        ALLOWED_HOSTS: "*"

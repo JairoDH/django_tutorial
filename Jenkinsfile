@@ -1,6 +1,6 @@
 pipeline { 
     environment {
-        IMAGE = "jairodh/django_jenkins"
+        IMAGE = "jairodh/django"
         LOGIN = "DOCKER_HUB"
     }
     agent none
