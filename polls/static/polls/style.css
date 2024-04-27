@@ -4,5 +4,9 @@ li a {
 }
 
 body {
-    background: white url("images/background.jpg");
+    background: white url("images/fondo.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
